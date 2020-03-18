@@ -4,15 +4,15 @@ import javax.naming.*;
  
 import com.sample.ejb.SampleBeanRemote;
 import com.sample.ejb.SampleBeanRemoteImpl;
- 
+import efdeveloper.remote.FooRemote;
+
 import java.util.*;
  
  
 public class RemoteEJBClient {
  
     public static void main(String[] args) throws Exception {
-        testRemoteEJB();
- 
+        testFooRemoteEJB();
     }
  
     private static void testRemoteEJB() throws NamingException {
@@ -21,7 +21,7 @@ public class RemoteEJBClient {
         String s = ejb.echo("Frank");
         System.out.println(s);
     }
- 
+
     private static SampleBeanRemote lookupRemoteEJB() throws NamingException {
         final Hashtable jndiProperties = new Hashtable();
         jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
@@ -41,6 +41,23 @@ public class RemoteEJBClient {
         return (SampleBeanRemote) context.lookup("ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + viewClassName);
  
  
+    }
+
+    private static void testFooRemoteEJB() throws NamingException {
+        final FooRemote ejb = lookupFooRemoteEJB();
+        boolean b = ejb.foo();
+        System.out.println(b);
+    }
+
+    private static FooRemote lookupFooRemoteEJB() throws NamingException {
+        final Hashtable jndiProperties = new Hashtable();
+        jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+
+        System.out.println("Looking EJB via JNDI ");
+        System.out.println(FooRemote.JNDI_NAME);
+
+        final Context context = new InitialContext(jndiProperties);
+        return (FooRemote) context.lookup(FooRemote.JNDI_NAME);
     }
  
 }
